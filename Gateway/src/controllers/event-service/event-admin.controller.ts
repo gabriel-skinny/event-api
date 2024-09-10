@@ -95,7 +95,7 @@ export class EventAdminController {
     };
   }
 
-  @Patch("public/:eventId")
+  @Post("public/:eventId")
   async publicEvent(
     @Param("eventId") eventId: string
   ): Promise<BaseControllerReturn> {
