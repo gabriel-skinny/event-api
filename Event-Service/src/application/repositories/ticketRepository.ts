@@ -4,6 +4,11 @@ import { IPagination } from "./interface";
 export abstract class AbstractTicketRepository {
   abstract save(ticket: Ticket): Promise<void>;
   abstract saveMany(tickets: Ticket[]): Promise<void>;
+  abstract countTicketsByEventAndType(data: {
+    eventId: string;
+    type: string;
+    available: boolean;
+  }): Promise<number>;
   abstract updateById(data: {
     id: string;
     updateData: Partial<Ticket>;
@@ -15,6 +20,11 @@ export abstract class AbstractTicketRepository {
   abstract findManyByBuyerId(
     data: { buyerId: string } & IPagination
   ): Promise<{ tickets: Ticket[]; totalCount: number }>;
+  abstract findManyByEventIdAndType(data: {
+    eventId: string;
+    type: string;
+    available: boolean;
+  }): Promise<{ tickets: Ticket[] }>;
   abstract ticketExistsByEventIdAndType(data: {
     type: string;
     eventId: string;
@@ -22,6 +32,10 @@ export abstract class AbstractTicketRepository {
   abstract updateManyByEventIdAndType(data: {
     eventId: string;
     type: string;
+    updateData: Partial<Ticket>;
+  }): Promise<{ rowsAffected: number }>;
+  abstract updateManyByIds(data: {
+    ids: string[];
     updateData: Partial<Ticket>;
   }): Promise<{ rowsAffected: number }>;
 }

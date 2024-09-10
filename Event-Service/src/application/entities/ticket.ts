@@ -6,6 +6,7 @@ interface IPropsTicket {
   buyed?: boolean;
   buyerId?: string;
   eventId: string;
+  orderId?: string;
   type: string;
   isAvailable?: boolean;
   createdAt?: Date;
@@ -20,6 +21,7 @@ export class Ticket {
   private _buyed: boolean;
   private _buyerId: string;
   readonly eventId: string;
+  readonly orderId?: string;
   private _isAvailable: boolean;
   readonly createdAt: Date;
   readonly updatedAt?: Date;
@@ -31,6 +33,7 @@ export class Ticket {
     this._buyed = props.buyed || false;
     this._buyerId = props.buyerId;
     this.eventId = props.eventId;
+    this.orderId = props.orderId;
     this._isAvailable = props.isAvailable || true;
     this.type = props.type;
 
