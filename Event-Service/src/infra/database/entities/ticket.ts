@@ -27,6 +27,9 @@ export class TicketModel {
   buyerId: string;
 
   @Prop()
+  orderId?: string;
+
+  @Prop()
   type: string;
 
   @Prop()
