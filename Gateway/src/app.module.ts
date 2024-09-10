@@ -3,9 +3,13 @@ import "dotenv/config";
 import { ClientController } from "./controllers/client.controller";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { ServiceModule } from "./auth/services.module";
-import { EventController } from "./controllers/event-service/event.controller";
+
 import { OrderController } from "./controllers/order.controller";
 import { PaymentController } from "./controllers/payment.controller";
+import { EventUserController } from "./controllers/event-service/event-user.controller";
+import { EventAdminController } from "./controllers/event-service/event-admin.controller";
+import { TicketUserController } from "./controllers/event-service/ticket-user.controller";
+import { TicketAdminController } from "./controllers/event-service/ticket-admin.controller";
 
 const services = [
   "CLIENT_SERVICE",
@@ -30,7 +34,10 @@ const services = [
   ],
   controllers: [
     ClientController,
-    EventController,
+    EventUserController,
+    EventAdminController,
+    TicketUserController,
+    TicketAdminController,
     OrderController,
     PaymentController,
   ],

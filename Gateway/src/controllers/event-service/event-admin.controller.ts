@@ -1,30 +1,30 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Inject,
   Param,
   ParseIntPipe,
-  ParseUUIDPipe,
+  Patch,
   Post,
   Query,
   Req,
   UseGuards,
 } from "@nestjs/common";
 
-import { AuthGuard } from "../../guards/Autentication";
 import { ClientProxy } from "@nestjs/microservices";
 import { firstValueFrom } from "rxjs";
-import { ILoginTokenData } from "src/auth/Auth";
+import { AuthGuard } from "../../guards/Autentication";
+import { ICreateEventReturn } from "./interface";
 import { BaseControllerReturn } from "../interface";
-
-interface IOrderTicketReturn {
-  ticketId: string;
-}
+import { CreateEventDTO } from "src/dtos/event.dto";
+import { ILoginTokenData } from "src/auth/Auth";
 
 @UseGuards(AuthGuard)
-@Controller("event")
-export class EventController {
+@Controller("event/admin")
+export class EventAdminController {
   constructor(
     @Inject("EVENT_SERVICE")
     private eventService: ClientProxy
@@ -46,24 +46,66 @@ export class EventController {
     };
   }
 
-  @Post("order-ticket/:eventId")
-  async orderTicket(
-    @Param("eventId", ParseUUIDPipe) eventId: string,
+  @Post()
+  async createEvent(
+    @Body() { endSellingDate, name, ticketGroups }: CreateEventDTO,
     @Req() req: { user: ILoginTokenData }
-  ): Promise<BaseControllerReturn<{ ticketId: string }>> {
-    const userId = req.user.userId;
+  ): Promise<BaseControllerReturn<{ eventId: string }>> {
+    const adminId = req.user.userId;
 
-    const { ticketId } = await firstValueFrom(
-      this.eventService.send<IOrderTicketReturn>(
-        { cmd: "order-ticket" },
-        { eventId, userId }
+    const { eventId } = await firstValueFrom(
+      this.eventService.send<ICreateEventReturn>(
+        { cmd: "order-tickets" },
+        { creatorId: adminId, endSellingDate, name, ticketGroups }
       )
     );
 
     return {
       statusCode: HttpStatus.CREATED,
-      message: "Create Order to ticket requested",
-      data: { ticketId },
+      message: "Event created",
+      data: { eventId },
+    };
+  }
+
+  @Patch("cancel/:eventId")
+  async cancelEvent(
+    @Param("eventId") eventId: string
+  ): Promise<BaseControllerReturn> {
+    await firstValueFrom(
+      this.eventService.send<void>({ cmd: "cancel-event" }, { eventId })
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: "Event canceled sucessffuly",
+    };
+  }
+
+  @Delete(":eventId")
+  async deleteEvent(
+    @Param("eventId") eventId: string
+  ): Promise<BaseControllerReturn> {
+    await firstValueFrom(
+      this.eventService.send<void>({ cmd: "delete-event" }, { eventId })
+    );
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: "Event deleted sucessffuly",
+    };
+  }
+
+  @Patch("public/:eventId")
+  async publicEvent(
+    @Param("eventId") eventId: string
+  ): Promise<BaseControllerReturn> {
+    await firstValueFrom(
+      this.eventService.send<void>({ cmd: "public-event" }, { eventId })
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: "Event published sucessffuly",
     };
   }
 }

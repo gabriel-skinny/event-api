@@ -3,3 +3,11 @@ export interface BaseControllerReturn<T = void> {
   data?: T;
   statusCode: HttpStatus;
 }
+
+export interface IBasePagination<T = void> {
+  totalCount: number;
+  actualPage: number;
+  perPage: number;
+  data: T;
+  isNext: boolean;
+}
