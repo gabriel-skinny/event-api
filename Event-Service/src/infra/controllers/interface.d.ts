@@ -1,6 +1,10 @@
-export interface IOrderTicketParams {
+export interface IOrderTicketsParams {
   eventId: string;
   userId: string;
+  ordersInfo: Array<{
+    ticketType: string;
+    quantity: number;
+  }>;
 }
 
 export interface IPaginationParams {
