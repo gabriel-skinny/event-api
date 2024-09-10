@@ -7,7 +7,7 @@ export abstract class AbstractTicketRepository {
   abstract countTicketsByEventAndType(data: {
     eventId: string;
     type: string;
-    available: boolean;
+    isAvailable: boolean;
   }): Promise<number>;
   abstract updateById(data: {
     id: string;
@@ -20,11 +20,13 @@ export abstract class AbstractTicketRepository {
   abstract findManyByBuyerId(
     data: { buyerId: string } & IPagination
   ): Promise<{ tickets: Ticket[]; totalCount: number }>;
-  abstract findManyByEventIdAndType(data: {
-    eventId: string;
-    type: string;
-    available: boolean;
-  }): Promise<{ tickets: Ticket[] }>;
+  abstract findManyByEventIdAndType(
+    data: {
+      eventId: string;
+      type: string;
+      isAvailable: boolean;
+    } & IPagination
+  ): Promise<{ tickets: Ticket[] }>;
   abstract ticketExistsByEventIdAndType(data: {
     type: string;
     eventId: string;
