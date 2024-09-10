@@ -1,7 +1,7 @@
 import { ClientKafka } from "@nestjs/microservices";
-import { AbstractEventRepository } from "../repositories/eventRepository";
+import { AbstractEventRepository } from "../../repositories/eventRepository";
 import { Inject } from "@nestjs/common";
-import { NotFoundError } from "../errors/notFound";
+import { NotFoundError } from "../../errors/notFound";
 
 interface ICancelEventUseCaseParams {
   eventId: string;

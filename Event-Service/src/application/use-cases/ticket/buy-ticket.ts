@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { AbstractTicketRepository } from '../repositories/ticketRepository';
+import { Injectable } from "@nestjs/common";
+import { AbstractTicketRepository } from "src/application/repositories/ticketRepository";
 
 interface IBuyTicketUseCaseParams {
   ticketId: string;

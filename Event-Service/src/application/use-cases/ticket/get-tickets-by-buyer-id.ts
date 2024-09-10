@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { Ticket } from "../entities/ticket";
-import { AbstractTicketRepository } from "../repositories/ticketRepository";
+import { Ticket } from "src/application/entities/ticket";
+import { AbstractTicketRepository } from "src/application/repositories/ticketRepository";
 
 interface IGetTicketsByBuyerIdUseCaseParams {
   buyerId: string;

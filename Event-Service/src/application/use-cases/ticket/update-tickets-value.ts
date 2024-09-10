@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { AbstractTicketRepository } from "../repositories/ticketRepository";
-import { NotFoundError } from "../errors/notFound";
+import { AbstractTicketRepository } from "../../repositories/ticketRepository";
+import { NotFoundError } from "../../errors/notFound";
 
 interface IUpdateTicketsValueUseCaseParams {
   eventId: string;

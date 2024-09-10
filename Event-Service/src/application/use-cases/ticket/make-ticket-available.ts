@@ -1,5 +1,5 @@
-import { NotFoundError } from "../errors/notFound";
-import { AbstractTicketRepository } from "../repositories/ticketRepository";
+import { NotFoundError } from "src/application/errors/notFound";
+import { AbstractTicketRepository } from "src/application/repositories/ticketRepository";
 
 interface IMakeTicketAvailableUseCaseParams {
   ticketId: string;
