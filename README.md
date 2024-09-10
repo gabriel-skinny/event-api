@@ -1,6 +1,6 @@
-# Event Api
+# Ticket Api
 
-Uma api que suporta a criação de novos eventos e compra de tickets para usuarios
+Uma api de compra e venda de tickets para eventos feita em NestJs
 
 ## Micro Serviços
 

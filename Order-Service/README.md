@@ -10,6 +10,10 @@
 
 status da ordem -> "on_payment" -> "processing payment" -> "payed" -> "canceled"
 
+## Controle interno
+
+- Cancelar uma ordem depois de 10 minutos sem ser paga
+
 ## Eventos - Sub
 
 - Criar ordem
