@@ -1,10 +1,12 @@
-import { NotFoundError } from "../errors/notFound";
-import { AbstractEventRepository } from "../repositories/eventRepository";
+import { Injectable } from "@nestjs/common";
+import { NotFoundError } from "src/application/errors/notFound";
+import { AbstractEventRepository } from "src/application/repositories/eventRepository";
 
 interface IDeleteEventUseCaseParams {
   eventId: string;
 }
 
+@Injectable()
 export class DeleteEventUseCase {
   constructor(private readonly eventRepository: AbstractEventRepository) {}
 

@@ -1,12 +1,13 @@
 import { ClientKafka } from "@nestjs/microservices";
 import { AbstractEventRepository } from "../../repositories/eventRepository";
-import { Inject } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { NotFoundError } from "../../errors/notFound";
 
 interface ICancelEventUseCaseParams {
   eventId: string;
 }
 
+@Injectable()
 export class CancelEventUseCase {
   constructor(
     private eventRepository: AbstractEventRepository,

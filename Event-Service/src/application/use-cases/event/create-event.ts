@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Event } from "src/application/entities/event";
 import { Ticket } from "src/application/entities/ticket";
 import { AbstractEventRepository } from "src/application/repositories/eventRepository";
@@ -18,6 +19,7 @@ interface ICreateEventUseCaseReturn {
   eventId: string;
 }
 
+@Injectable()
 export class CreateEventUseCase {
   constructor(
     private eventRepository: AbstractEventRepository,

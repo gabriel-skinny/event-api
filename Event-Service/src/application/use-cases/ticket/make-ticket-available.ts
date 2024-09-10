@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { NotFoundError } from "src/application/errors/notFound";
 import { AbstractTicketRepository } from "src/application/repositories/ticketRepository";
 
@@ -5,6 +6,7 @@ interface IMakeTicketAvailableUseCaseParams {
   ticketId: string;
 }
 
+@Injectable()
 export class MakeTicketAvailableUseCase {
   constructor(private ticketRepository: AbstractTicketRepository) {}
 

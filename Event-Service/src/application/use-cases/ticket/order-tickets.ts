@@ -36,7 +36,7 @@ export class OrderTicketsUseCaseCase {
         await this.ticketRepository.countTicketsByEventAndType({
           eventId,
           type: order.ticketType,
-          available: true,
+          isAvailable: true,
         });
 
       if (order.quantity > ticketNumber)
@@ -48,7 +48,8 @@ export class OrderTicketsUseCaseCase {
       const { tickets } = await this.ticketRepository.findManyByEventIdAndType({
         eventId,
         type: order.ticketType,
-        available: true,
+        isAvailable: true,
+        limit: order.quantity,
       });
 
       ticketsToOrder.push(...tickets);
