@@ -3,7 +3,7 @@ import "dotenv/config";
 import { ClientController } from "./controllers/client.controller";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { ServiceModule } from "./auth/services.module";
-import { EventController } from "./controllers/event.controller";
+import { EventController } from "./controllers/event-service/event.controller";
 import { OrderController } from "./controllers/order.controller";
 import { PaymentController } from "./controllers/payment.controller";
 
