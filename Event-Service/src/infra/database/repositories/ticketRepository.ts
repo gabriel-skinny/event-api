@@ -12,7 +12,6 @@ export default class TicketRepository implements AbstractTicketRepository {
   constructor(
     @InjectModel(TicketModel.name) private ticketModel: Model<TicketModel>
   ) {}
-
   async save(ticket: Ticket): Promise<void> {
     const ticketModel = TicketMapper.toDatabase(ticket);
 
@@ -50,6 +49,21 @@ export default class TicketRepository implements AbstractTicketRepository {
   }): Promise<{ rowsAffected: number }> {
     const result = await this.ticketModel.updateOne(
       { eventId, type },
+      updateData
+    );
+
+    return { rowsAffected: result.modifiedCount };
+  }
+
+  async updateManyByIds({
+    ids,
+    updateData,
+  }: {
+    ids: string[];
+    updateData: Partial<Ticket>;
+  }): Promise<{ rowsAffected: number }> {
+    const result = await this.ticketModel.updateMany(
+      { id: { $in: [ids] } },
       updateData
     );
 
@@ -115,6 +129,37 @@ export default class TicketRepository implements AbstractTicketRepository {
       tickets: ticketsModel.map(TicketMapper.toDomain),
       totalCount: countedTotalDocuments,
     };
+  }
+
+  async findManyByEventIdAndType({
+    eventId,
+    isAvailable,
+    type,
+    limit,
+    skip = 0,
+  }: {
+    eventId: string;
+    type: string;
+    isAvailable: boolean;
+  } & IPagination): Promise<{ tickets: Ticket[] }> {
+    const ticketsModel = await this.ticketModel
+      .find({ eventId, isAvailable, type })
+      .limit(limit)
+      .skip(skip);
+
+    return { tickets: ticketsModel.map(TicketMapper.toDomain) };
+  }
+
+  async countTicketsByEventAndType({
+    eventId,
+    isAvailable,
+    type,
+  }: {
+    eventId: string;
+    type: string;
+    isAvailable: boolean;
+  }): Promise<number> {
+    return this.ticketModel.countDocuments({ eventId, type, isAvailable });
   }
 
   async ticketExistsByEventIdAndType({
