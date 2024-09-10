@@ -28,7 +28,7 @@ Evento:
 - `createEvent()`: Cria um evento com tickets
 - `publicEvent()`: Deixa um evento disponivel para ser comprado
 - `getManyEvents()`: Lista todos os eventos
-- `cancelEvent()`: Cancel a disponibilidade de um evento
+- `cancelEvent()`: Cancela a disponibilidade de um evento
 - `deleteEvent()`: Deleta um evento
 
 Ticket:

@@ -1,7 +1,7 @@
-import { Event } from "../entities/event";
-import { Ticket } from "../entities/ticket";
-import { AbstractEventRepository } from "../repositories/eventRepository";
-import { AbstractTicketRepository } from "../repositories/ticketRepository";
+import { Event } from "src/application/entities/event";
+import { Ticket } from "src/application/entities/ticket";
+import { AbstractEventRepository } from "src/application/repositories/eventRepository";
+import { AbstractTicketRepository } from "src/application/repositories/ticketRepository";
 
 interface ICreateEventUseCaseParams {
   name: string;

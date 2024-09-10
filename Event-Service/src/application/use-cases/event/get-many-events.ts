@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { Event } from "../entities/event";
-import { AbstractEventRepository } from "../repositories/eventRepository";
+import { Event } from "src/application/entities/event";
+import { AbstractEventRepository } from "src/application/repositories/eventRepository";
 
 interface IGetManyEventsParams {
   page: number;
