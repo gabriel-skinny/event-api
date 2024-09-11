@@ -33,6 +33,7 @@ export class EventAdminController {
   ) {}
 
   @Get()
+  @Role(TokenTypeEnum.ADMIN)
   async getMany(
     @Query("perpage", new ParseIntPipe()) perPage: number,
     @Query("page", new ParseIntPipe()) page: number

@@ -1,9 +1,11 @@
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
-} from 'class-validator';
+  IsUUID,
+} from "class-validator";
 
 export class CreateUserDTO {
   @IsEmail()
@@ -27,4 +29,14 @@ export class LoginDTO {
   @IsStrongPassword()
   @IsNotEmpty()
   password: string;
+}
+
+export class UpdatePermissionDTO {
+  @IsUUID()
+  @IsNotEmpty()
+  userId: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isAdmin: boolean;
 }

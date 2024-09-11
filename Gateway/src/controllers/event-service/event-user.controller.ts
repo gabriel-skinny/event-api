@@ -24,6 +24,7 @@ export class EventUserController {
   ) {}
 
   @Get()
+  @Role(TokenTypeEnum.USER)
   async getMany(
     @Query("perpage", new ParseIntPipe()) perPage: number,
     @Query("page", new ParseIntPipe()) page: number

@@ -10,10 +10,11 @@ export interface IUserTokenData {
   type: TokenTypeEnum;
 }
 
-interface IGenerateLoginTokenParams {
+export interface IGenerateLoginTokenParams {
   userId: string;
   name: string;
   email: string;
+  isAdmin: boolean;
 }
 
 export abstract class AbstractAuthService {

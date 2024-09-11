@@ -18,7 +18,7 @@ export class AuthService implements AbstractAuthService {
       sub: data.userId,
       username: data.name,
       useremail: data.email,
-      type: TokenTypeEnum.USER,
+      type: data.isAdmin ? TokenTypeEnum.ADMIN : TokenTypeEnum.USER,
     };
 
     const token = await this.jwtService.signAsync(payload);

@@ -1,71 +1,71 @@
 import {
   Body,
   Controller,
-  HttpException,
   HttpStatus,
   Inject,
-  InternalServerErrorException,
+  Patch,
   Post,
-} from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+} from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
 
-import { AbstractAuthService } from '../auth/Auth';
-import { CreateUserDTO, LoginDTO } from 'src/dtos/user.dto';
-import { firstValueFrom } from 'rxjs';
-import { BaseControllerReturn } from './interface';
+import { firstValueFrom } from "rxjs";
+import { AbstractAuthService } from "../auth/interface";
+import { CreateUserDTO, LoginDTO, UpdatePermissionDTO } from "../dtos/user.dto";
+import { BaseControllerReturn } from "./interface";
 
 interface ILoginUserServiceReturnData {
   userId: string;
   email: string;
   name: string;
+  isAdmin: boolean;
 }
 
 interface ICreateUserServiceReturnData {
   userId: string;
 }
 
-@Controller('user')
+@Controller("user")
 export class ClientController {
   constructor(
-    @Inject('CLIENT_SERVICE')
+    @Inject("CLIENT_SERVICE")
     private clientService: ClientProxy,
-    private authService: AbstractAuthService,
+    private authService: AbstractAuthService
   ) {}
 
   @Post()
   async create(
-    @Body() { email, name, password }: CreateUserDTO,
+    @Body() { email, name, password }: CreateUserDTO
   ): Promise<BaseControllerReturn<ICreateUserServiceReturnData>> {
     const userData = await firstValueFrom(
       this.clientService.send<ICreateUserServiceReturnData>(
-        { cmd: 'user-create' },
+        { cmd: "user-create" },
         {
           email,
           name,
           password,
-        },
-      ),
+        }
+      )
     );
 
     return {
-      message: 'User created succesfully',
+      message: "User created succesfully",
       statusCode: HttpStatus.OK,
       data: userData,
     };
   }
 
-  @Post('/login')
+  @Post("/login")
   async login(
-    @Body() { email, password }: LoginDTO,
+    @Body() { email, password }: LoginDTO
   ): Promise<BaseControllerReturn<{ token: string }>> {
     const data = await firstValueFrom(
       this.clientService.send<ILoginUserServiceReturnData>(
-        { cmd: 'user-login' },
+        { cmd: "user-login" },
         {
           email,
           password,
-        },
-      ),
+        }
+      )
     );
 
     const { token } = await this.authService.generateLoginToken({
@@ -75,9 +75,29 @@ export class ClientController {
     });
 
     return {
-      message: 'loged in succesfully',
+      message: "loged in succesfully",
       statusCode: HttpStatus.OK,
       data: { token },
+    };
+  }
+
+  @Patch("update-permission")
+  async updatePermission(
+    @Body() { isAdmin, userId }: UpdatePermissionDTO
+  ): Promise<BaseControllerReturn> {
+    await firstValueFrom(
+      this.clientService.send<ILoginUserServiceReturnData>(
+        { cmd: "update-permission" },
+        {
+          isAdmin,
+          userId,
+        }
+      )
+    );
+
+    return {
+      message: "Permission updated",
+      statusCode: HttpStatus.OK,
     };
   }
 }

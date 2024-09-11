@@ -10,12 +10,13 @@ import {
   Query,
   Req,
   UseGuards,
-} from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-import { AuthGuard } from '../guards/Autentication';
-import { ILoginTokenData } from 'src/auth/Auth';
-import { BaseControllerReturn } from './interface';
+} from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
+import { AuthGuard } from "../guards/Autentication";
+
+import { BaseControllerReturn } from "./interface";
+import { IUserTokenData } from "src/auth/interface";
 
 interface IGetPaymentsByUserReturn {
   id: string;
@@ -30,46 +31,46 @@ interface IGetPaymentsByUserReturn {
 }
 
 @UseGuards(AuthGuard)
-@Controller('payments')
+@Controller("payments")
 export class PaymentController {
   constructor(
-    @Inject('PAYMENT_SERVICE')
-    private readonly paymentService: ClientProxy,
+    @Inject("PAYMENT_SERVICE")
+    private readonly paymentService: ClientProxy
   ) {}
 
-  @Post('webhook-payment-confirmation/:externalId')
+  @Post("webhook-payment-confirmation/:externalId")
   async webhookPaymentConfirmation(
-    @Param('externalId', ParseUUIDPipe) externalId: string,
+    @Param("externalId", ParseUUIDPipe) externalId: string
   ) {
     firstValueFrom(
       this.paymentService.send(
-        { cmd: 'webhook-payment-confirmation' },
-        { externalId },
-      ),
+        { cmd: "webhook-payment-confirmation" },
+        { externalId }
+      )
     );
 
     return {
       statusCode: HttpStatus.OK,
-      message: 'Payment confirmed',
+      message: "Payment confirmed",
     };
   }
 
   @Get()
   async getManyByUser(
-    @Req() { user }: { user: ILoginTokenData },
-    @Query('perpage', new ParseIntPipe()) perPage: number,
-    @Query('page', new ParseIntPipe()) page: number,
+    @Req() { user }: { user: IUserTokenData },
+    @Query("perpage", new ParseIntPipe()) perPage: number,
+    @Query("page", new ParseIntPipe()) page: number
   ): Promise<BaseControllerReturn<{ payments: IGetPaymentsByUserReturn[] }>> {
     const { payments } = await firstValueFrom(
       this.paymentService.send<{ payments: IGetPaymentsByUserReturn[] }>(
-        { cmd: 'get-many-by-user' },
-        { userId: user.userId, perPage, page },
-      ),
+        { cmd: "get-many-by-user" },
+        { userId: user.sub, perPage, page }
+      )
     );
 
     return {
       statusCode: HttpStatus.OK,
-      message: 'Payments from user',
+      message: "Payments from user",
       data: { payments },
     };
   }
