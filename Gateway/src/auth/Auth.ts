@@ -1,30 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-
-export interface ILoginTokenData {
-  userId: string;
-  email: string;
-  name: string;
-}
-
-export abstract class AbstractAuthService {
-  abstract generateLoginToken(data: {
-    userId: string;
-    email: string;
-    name: string;
-  }): Promise<{ token: string }>;
-  abstract verifyToken(token: string): Promise<ILoginTokenData>;
-}
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import {
+  AbstractAuthService,
+  IGenerateLoginTokenParams,
+  IUserTokenData,
+  TokenTypeEnum,
+} from "./interface";
 
 @Injectable()
 export class AuthService implements AbstractAuthService {
   constructor(private jwtService: JwtService) {}
 
-  async generateLoginToken(data: ILoginTokenData): Promise<{ token: string }> {
-    const payload = {
+  async generateLoginToken(
+    data: IGenerateLoginTokenParams
+  ): Promise<{ token: string }> {
+    const payload: IUserTokenData = {
       sub: data.userId,
       username: data.name,
       useremail: data.email,
+      type: TokenTypeEnum.USER,
     };
 
     const token = await this.jwtService.signAsync(payload);
@@ -32,15 +26,16 @@ export class AuthService implements AbstractAuthService {
     return { token };
   }
 
-  async verifyToken(token: string): Promise<ILoginTokenData> {
-    const payload = await this.jwtService.verifyAsync(token, {
+  async verifyToken(token: string): Promise<IUserTokenData> {
+    const data = await this.jwtService.verifyAsync<IUserTokenData>(token, {
       secret: process.env.JWT_SECRET,
     });
 
     return {
-      email: payload.useremail,
-      name: payload.username,
-      userId: payload.sub,
+      sub: data.sub,
+      type: data.type,
+      username: data.username,
+      useremail: data.useremail,
     };
   }
 }
