@@ -3,22 +3,19 @@ import {
   Get,
   HttpStatus,
   Inject,
-  Param,
   ParseIntPipe,
-  ParseUUIDPipe,
-  Post,
   Query,
-  Req,
   UseGuards,
 } from "@nestjs/common";
 
-import { AuthGuard } from "../../guards/Autentication";
 import { ClientProxy } from "@nestjs/microservices";
 import { firstValueFrom } from "rxjs";
-import { ILoginTokenData } from "src/auth/Auth";
-import { BaseControllerReturn } from "../interface";
+import { TokenTypeEnum } from "src/auth/interface";
+import { Role } from "src/decoretors/role.decoretor";
+import { AuthGuard } from "../../guards/Autentication";
 
 @UseGuards(AuthGuard)
+@Role(TokenTypeEnum.USER)
 @Controller("event/user")
 export class EventUserController {
   constructor(

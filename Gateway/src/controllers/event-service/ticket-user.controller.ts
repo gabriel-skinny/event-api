@@ -13,11 +13,13 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { ILoginTokenData } from "src/auth/Auth";
+import { firstValueFrom } from "rxjs";
+
+import { IUserTokenData, TokenTypeEnum } from "src/auth/interface";
+import { Role } from "src/decoretors/role.decoretor";
+import { OrderTicketsDTO } from "src/dtos/ticket.dto";
 import { AuthGuard } from "src/guards/Autentication";
 import { BaseControllerReturn, IBasePagination } from "../interface";
-import { firstValueFrom } from "rxjs";
-import { OrderTicketsDTO } from "src/dtos/ticket.dto";
 import {
   IGetTicketsByBuyerIdReturn,
   IOrderTicketReturn,
@@ -25,6 +27,7 @@ import {
 } from "./interface";
 
 @UseGuards(AuthGuard)
+@Role(TokenTypeEnum.USER)
 @Controller("event/user/tickets")
 export class TicketUserController {
   constructor(
@@ -64,9 +67,9 @@ export class TicketUserController {
   async orderTickets(
     @Param("eventId", ParseUUIDPipe) eventId: string,
     @Body() { ordersInfo }: OrderTicketsDTO,
-    @Req() req: { user: ILoginTokenData }
+    @Req() req: { user: IUserTokenData }
   ): Promise<BaseControllerReturn<{ orderId: string }>> {
-    const userId = req.user.userId;
+    const userId = req.user.sub;
 
     const { orderId } = await firstValueFrom(
       this.eventService.send<IOrderTicketReturn>(

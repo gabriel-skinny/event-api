@@ -20,9 +20,11 @@ import { AuthGuard } from "../../guards/Autentication";
 import { ICreateEventReturn } from "./interface";
 import { BaseControllerReturn } from "../interface";
 import { CreateEventDTO } from "src/dtos/event.dto";
-import { ILoginTokenData } from "src/auth/Auth";
+import { IUserTokenData, TokenTypeEnum } from "src/auth/interface";
+import { Role } from "src/decoretors/role.decoretor";
 
 @UseGuards(AuthGuard)
+@Role(TokenTypeEnum.ADMIN)
 @Controller("event/admin")
 export class EventAdminController {
   constructor(
@@ -49,9 +51,9 @@ export class EventAdminController {
   @Post()
   async createEvent(
     @Body() { endSellingDate, name, ticketGroups }: CreateEventDTO,
-    @Req() req: { user: ILoginTokenData }
+    @Req() req: { user: IUserTokenData }
   ): Promise<BaseControllerReturn<{ eventId: string }>> {
-    const adminId = req.user.userId;
+    const adminId = req.user.sub;
 
     const { eventId } = await firstValueFrom(
       this.eventService.send<ICreateEventReturn>(

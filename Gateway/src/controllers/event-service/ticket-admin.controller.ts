@@ -15,8 +15,11 @@ import { AuthGuard } from "src/guards/Autentication";
 import { IUpdateTicketsValueReturn } from "./interface";
 import { firstValueFrom } from "rxjs";
 import { BaseControllerReturn } from "../interface";
+import { TokenTypeEnum } from "src/auth/interface";
+import { Role } from "src/decoretors/role.decoretor";
 
 @UseGuards(AuthGuard)
+@Role(TokenTypeEnum.ADMIN)
 @Controller("event/admin/tickets")
 export class TicketAdminController {
   constructor(
