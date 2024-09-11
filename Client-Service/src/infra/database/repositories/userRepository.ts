@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User } from '../../../application/entities/User';
-import { AbstractUserRepository } from '../../../application/repositories/userRepository';
-import { UserModel } from '../entities/user';
-import { UserMapper } from '../mappers/user';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { User } from "../../../application/entities/User";
+import { AbstractUserRepository } from "../../../application/repositories/userRepository";
+import { UserModel } from "../entities/user";
+import { UserMapper } from "../mappers/user";
 
 @Injectable()
 export default class UserRepository implements AbstractUserRepository {
   constructor(
-    @InjectModel(UserModel.name) private userModel: Model<UserModel>,
+    @InjectModel(UserModel.name) private userModel: Model<UserModel>
   ) {}
 
   async save(user: User): Promise<void> {
@@ -34,5 +34,20 @@ export default class UserRepository implements AbstractUserRepository {
 
   async existsById(id: string): Promise<boolean> {
     return !!this.userModel.exists({ id });
+  }
+
+  async updateById({
+    id,
+    updateData,
+  }: {
+    id: string;
+    updateData: Partial<User>;
+  }): Promise<{ affetedRows: number }> {
+    const { modifiedCount } = await this.userModel.updateOne(
+      { id },
+      updateData
+    );
+
+    return { affetedRows: modifiedCount };
   }
 }

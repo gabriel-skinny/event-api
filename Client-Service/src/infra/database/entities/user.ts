@@ -1,9 +1,9 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
 
 export type UserDocument = HydratedDocument<UserModel>;
 
-@Schema({ collection: 'user' })
+@Schema({ collection: "user" })
 export class UserModel {
   constructor(userModel: UserDocument) {
     Object.keys(userModel).map((key) => (this[key] = userModel[key]));
@@ -19,6 +19,9 @@ export class UserModel {
 
   @Prop()
   name: string;
+
+  @Prop()
+  isAdmin: boolean;
 
   @Prop()
   email: string;

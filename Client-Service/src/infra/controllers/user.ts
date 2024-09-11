@@ -1,8 +1,9 @@
-import { Controller, HttpStatus } from '@nestjs/common';
+import { Controller, HttpStatus } from "@nestjs/common";
 
-import { MessagePattern } from '@nestjs/microservices';
-import { CreateUserUseCase } from 'src/application/use-cases/create';
-import { LoginUseCase } from 'src/application/use-cases/login';
+import { MessagePattern } from "@nestjs/microservices";
+import { CreateUserUseCase } from "src/application/use-cases/create";
+import { LoginUseCase } from "src/application/use-cases/login";
+import { UpdatePermisionUseCase } from "src/application/use-cases/update-permision";
 
 interface ILoginUserServiceReturnData {
   userId: string;
@@ -21,14 +22,15 @@ interface ILoginParams {
   password: string;
 }
 
-@Controller('user')
+@Controller("user")
 export class UserController {
   constructor(
     private createUserUseCase: CreateUserUseCase,
     private loginUseCase: LoginUseCase,
+    private updatePermissionUseCase: UpdatePermisionUseCase
   ) {}
 
-  @MessagePattern({ cmd: 'user-create' })
+  @MessagePattern({ cmd: "user-create" })
   async create({
     email,
     name,
@@ -43,7 +45,7 @@ export class UserController {
     return { userId: user.id };
   }
 
-  @MessagePattern({ cmd: 'user-login' })
+  @MessagePattern({ cmd: "user-login" })
   async login({
     email,
     password,
@@ -54,5 +56,18 @@ export class UserController {
     });
 
     return data;
+  }
+
+  @MessagePattern({ cmd: "update-permission" })
+  async updatePermission({
+    userId,
+    isAdmin,
+  }: {
+    userId: string;
+    isAdmin: boolean;
+  }) {
+    await this.updatePermissionUseCase.execute({ isAdmin, userId });
+
+    return { message: "Updated sucessfully" };
   }
 }
