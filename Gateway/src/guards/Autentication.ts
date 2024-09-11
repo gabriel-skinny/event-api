@@ -3,16 +3,25 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Request } from 'express';
-import { AbstractAuthService } from 'src/auth/Auth';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { Request } from "express";
+import { AbstractAuthService } from "src/auth/interface";
+import { Role } from "src/decoretors/role.decoretor";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AbstractAuthService) {}
+  constructor(
+    private reflector: Reflector,
+    private authService: AbstractAuthService
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    const role = this.reflector.get(Role, context.getHandler());
+
+    if (!role)
+      throw new UnauthorizedException("Role not defined to that route");
 
     const token = this.extractTokenFromHeader(request);
     if (!token) throw new UnauthorizedException();
@@ -20,7 +29,9 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = await this.authService.verifyToken(token);
 
-      request['user'] = payload;
+      if (payload.type !== role) throw new UnauthorizedException();
+
+      request["user"] = payload;
     } catch {
       throw new UnauthorizedException();
     }
@@ -28,7 +39,7 @@ export class AuthGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const [type, token] = request.headers.authorization?.split(" ") ?? [];
+    return type === "Bearer" ? token : undefined;
   }
 }
