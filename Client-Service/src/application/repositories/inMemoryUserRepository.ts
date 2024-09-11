@@ -1,11 +1,18 @@
-import { User } from '../entities/User';
-import { AbstractUserRepository } from './userRepository';
+import { User } from "../entities/User";
+import { AbstractUserRepository } from "./userRepository";
 
 export class InMemoryUserRepository implements AbstractUserRepository {
   public userDatabase: User[] = [];
 
   async save(user: User): Promise<void> {
     this.userDatabase.push(user);
+  }
+
+  updateById(data: {
+    id: string;
+    updateData: Partial<User>;
+  }): Promise<{ affetedRows: number }> {
+    throw new Error("Method not implemented.");
   }
 
   async existsByEmail(email: string): Promise<boolean> {
